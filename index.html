@@ -495,7 +495,7 @@ wsl.obs.filter=function(o.xy,a.xy=NULL,grid)
             # Store with cluster ID depending on the output
             if (nrow(do.samp)%in%0){
                 next
-            } else if (class(do.samp) %in% &quot;numeric&quot;) {
+            } else if (class(do.samp)[1] %in% &quot;numeric&quot;) {
                 do.samp=matrix(do.samp,ncol=2)
                 colnames(do.samp)=c(&quot;x&quot;, &quot;y&quot;)
             }
