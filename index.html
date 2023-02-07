@@ -233,7 +233,7 @@ wsl.obs.filter=function(o.xy,a.xy=NULL,grid)
       new.oxy=coordinates(grid)[unique(posCELL),]
     }
 
-    if (class(new.oxy)%in%&quot;numeric&quot;){
+    if (class(new.oxy)[1]%in%&quot;numeric&quot;){
       new.oxy=matrix(new.oxy,ncol=2)
       colnames(new.oxy)=c(&quot;x&quot;,&quot;y&quot;)
     }
