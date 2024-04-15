@@ -33,7 +33,8 @@
 #' the overall one (i.e. the number of original species observations per cluster is correlated
 #' with that of the full dataset)?
 #' @param sp.cor  If sp.specific = TRUE, spearman's correlation tests are by default set to 0.5;
-#' i.e. species with r < 0.5 are excluded from the function outputs.
+#' i.e. species with r < 0.5 are excluded from the function outputs. If sp.cor = 0, all species
+#' are kept and corrected.
 #' @param keep.bias Default is TRUE. Strongly recommended to use when sp.cor = TRUE. Per species,
 #' should the number of observations of the cluster in which the species was originally sampled
 #' most often, be preserved? Said differently, for each species, should the cluster with the most
@@ -106,6 +107,11 @@
 wsl.ebc=function(obs=NULL,ras=NULL,pportional=TRUE,plog=TRUE,nclust=50,
 	sp.specific=TRUE,sp.cor=0.5,keep.bias=TRUE,filter=FALSE,path=NULL,...)
 {
+	# Solve sp.cor = 0
+	if (sp.cor %in% 0){
+		sp.cor = -1
+	}
+
 	# 'nclust' must be at least equal to '2'
 	if (nclust<=1 || is.null(nclust)){
 		stop("'nclust' must be equal to 2 or more...!")
