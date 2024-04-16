@@ -77,29 +77,29 @@ wsl.ebc = function(obs=NULL,ras=NULL,pportional=TRUE,plog=TRUE,nclust=50,
 
 ### Arguments
 
-**obs**: Object of class matrix or data frame with three columns named "sp.id" (character), "x" (numeric) and "y" (numeric). More than one observation per species must be referenced. If only one species is in the data.frame, its sole observations will be resampled (equally or proportionally) across the environmental clusters.
+**obs**::: Object of class matrix or data frame with three columns named "sp.id" (character), "x" (numeric) and "y" (numeric). More than one observation per species must be referenced. If only one species is in the data.frame, its sole observations will be resampled (equally or proportionally) across the environmental clusters.
 
-**ras**: Object of class RasterBrick, RasterStack, list of RasterLayer of desired resolution and extent. Used to generate the map of clusters needed to summarize the environmental space of the study area.
+**ras**::: Object of class RasterBrick, RasterStack, list of RasterLayer of desired resolution and extent. Used to generate the map of clusters needed to summarize the environmental space of the study area.
 
-**pportional**:  Logical. Should environmental stratification of observations be proportional to the clusters' areas? If TRUE, EBCp applies.
+**pportional**:::  Logical. Should environmental stratification of observations be proportional to the clusters' areas? If TRUE, EBCp applies.
 
-**plog**--> Logical. Should EBCp apply with a logarithm? If TRUE, a stratification consensus between EBCp and EBCe applies.
+**plog**::: Logical. Should EBCp apply with a logarithm? If TRUE, a stratification consensus between EBCp and EBCe applies.
 
-**nclust**--> Number of chosen clusters. Default is 50.
+**nclust**::: Number of chosen clusters. Default is 50.
 
-**sp.specific**--> Logical. Should EBC apply only for species whose environmental bias follows the overall one (i.e. the number of original species observations per cluster is correlated with that of the full dataset)?
+**sp.specific**::: Logical. Should EBC apply only for species whose environmental bias follows the overall one (i.e. the number of original species observations per cluster is correlated with that of the full dataset)?
 
-**sp.cor** If sp.specific = TRUE, spearman's correlation tests are by default set to 0.5; i.e. species with r < 0.5 are excluded from the function outputs. If sp.cor = 0, all species are kept and corrected.
+**sp.cor**::: If sp.specific = TRUE, spearman's correlation tests are by default set to 0.5; i.e. species with r < 0.5 are excluded from the function outputs. If sp.cor = 0, all species are kept and corrected.
 
-**keep.bias**--> Default is TRUE. Strongly recommended to use when sp.cor = TRUE. Per species, should the number of observations of the cluster in which the species was originally sampled most often, be preserved? Said differently, for each species, should the cluster with the most original species observations be as representative as the cluster with the most corrected observations? If TRUE, after EBC applies, the number of observations per species in their densest original cluster is set to that of the densest corrected cluster.
+**keep.bias**::: Default is TRUE. Strongly recommended to use when sp.cor = TRUE. Per species, should the number of observations of the cluster in which the species was originally sampled most often, be preserved? Said differently, for each species, should the cluster with the most original species observations be as representative as the cluster with the most corrected observations? If TRUE, after EBC applies, the number of observations per species in their densest original cluster is set to that of the densest corrected cluster.
 
-**filter**--> Logical. Should the observations be filtered according to 'ras' resolution?
+**filter**::: Logical. Should the observations be filtered according to 'ras' resolution?
 
-**resample**--> Logical. If TRUE, the number of corrected observations per species will not exceed twice the number of original observations (resample without replacement)
+**resample**::: Logical. If TRUE, the number of corrected observations per species will not exceed twice the number of original observations (resample without replacement)
 
-**path**--> Path folder where the new species observation files should be saved.
+**path**::: Path folder where the new species observation files should be saved.
 
-**...**--> Additional arguments passed on to the ‘clara’ function (package 'cluster') 
+**...**::: Additional arguments passed on to the ‘clara’ function (package 'cluster') 
 
 ### Return value
 
