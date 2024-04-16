@@ -105,7 +105,7 @@ wsl.ebc = function(obs=NULL,ras=NULL,pportional=TRUE,plog=TRUE,nclust=50,
 
 The function returns in ‘path’, one text file of corrected observations (presences or absences) per species. If the number of new EBC observations per species is too large, sampling those randomly without replacement before model calibrations is advised.
 
-## 3. *wsl.ebc* function
+## 4. *wsl.ebc* function
 
 ``` r
 wsl.ebc=function(obs=NULL,ras=NULL,pportional=TRUE,plog=TRUE,nclust=50,
@@ -327,3 +327,108 @@ wsl.ebc=function(obs=NULL,ras=NULL,pportional=TRUE,plog=TRUE,nclust=50,
 	}
 }
 ```
+
+## 5. Examples
+
+``` r
+# Load data
+load("exrst.RData")
+load("xy_ppm.RData")
+
+# Run EBC function with the log consensus
+# sp.specific = TRUE --> Select corrected XY outputs in a species-specific manner
+# keep.bias = TRUE   --> Preserve initial observer bias of each species
+wsl.ebc(obs = xy.ppm,
+        ras = rst[[1:5]],
+        pportional = TRUE,
+        plog = TRUE,
+        nclust = 50,
+        sp.specific = TRUE,
+        sp.cor = 0.5,
+        filter = TRUE,
+        keep.bias = TRUE,
+        resample= = FALSE,
+	path = getwd())
+```
+``` r
+## Step 1 --> CLARA algorithm processing... 
+## Step 2 --> Species inventory... 
+## ...Environmental proportional stratification = TRUE... 
+## ...log... 
+## Step 3 --> EBC set to species-specific... 
+## Step 4 --> Initial environmental bias per species is preserved... 
+## Step 5 --> Environmental Bias Correction (EBC) starting... 
+## Processing  sp1 ... 
+## Processing  sp2 ... 
+## Processing  sp3 ... 
+## Processing  sp4 ... 
+## Processing  sp5 ... 
+## Processing  sp6 ... 
+## Processing  sp7 ... 
+## Processing  sp8 ... 
+## Processing  sp9 ... 
+## Processing  sp10 ...
+```
+``` r
+# Open corrected observations
+files = list.files(getwd())
+target.files = files[grep("_obs_corrected_",files)]
+correct.obs = lapply(target.files, function(x) obs=read.table(paste0(getwd(),"/",x)))
+correct.obs = do.call("rbind",correct.obs)
+
+# Extract with corrected and uncorrected observations environmental values of 'rst'
+correct.env = extract(rst,correct.obs[,-1])
+uncorrect.env = extract(rst,xy.ppm[,-1])
+
+# Sampling of the environment (e.g. second layer) and of environmental values extracted with observations
+f.correct.env = correct.env[,2]
+f.uncorrect.env = uncorrect.env[,2]
+first.env = rst[[2]][!is.na(rst[[2]])]
+samp.env = first.env[sample(1:length(first.env),2e3)]
+samp.vc=f.correct.env[sample(1:length(f.correct.env),2e3)]
+samp.vnc=f.uncorrect.env[sample(1:length(f.uncorrect.env),2e3)]
+ 
+# Plot distribution histograms for each 
+par(mfrow = c(2,2))
+hist(samp.env,breaks = seq(min(samp.env),max(samp.env),length.out=11)) # Cluster distribution across the region
+hist(samp.vc,breaks = seq(min(samp.vc),max(samp.vc),length.out=11))  # Corrected obs. density (OD) per cluster
+hist(samp.vnc,breaks = seq(min(samp.vnc),max(samp.vnc),length.out=11)) # Original/uncorrected OD per cluster
+```
+![Untitled](https://github.com/8Ginette8/GEB_wsl.ebc/assets/43674773/287e6d38-3189-4c12-89e4-47f69c9e638e)
+
+## 6. Implementation of wsl.ebc function in our analysis
+### Chosen parameters
+
+*pportional*         TRUE (EBCp) and FALSE (EBCe)
+
+*plog*                  FALSE
+
+*nclust*                100
+
+*sp.specific*         FALSE
+
+*sp.cor*                NULL
+
+*keep.bias*          FALSE
+
+*filter*                   FALSE 
+
+### Comments on the Discussion
+
+**In the Discussion**: EBC should (1) only be applied if environmental bias is apparent, (2) ideally implemented in a species-specific manner, and (3) preserve the influence of the original environmental cluster within which the species was most sampled.
+
+**Comment**: While EBC limitation (1) must be adressed by the user, EBC limitations (2) and (3) are adressed in wsl.ebc via the logical and correlation parameters sp.specific and sp.cor, and the logical parameter keep.bias respectively. (2) and (3) were not included in our analysis in order to simplify model and bias correction comparisons. Furthermore, keep.bias would only be efficient in preserving per species the environmental influence of its most sampled original cluster, if the selected number of clusters remains reasonable (by default, nclust = 50); i.e. summarizing not too precisely the environmental space of the study area, yet, large enough to account for the its environmental complexity. 
+
+## 7. To cite
+
+Chauvier, Y., Zimmermann, N. E., Poggiato, G., Bystrova, D., Brun, P., & Thuiller, W. (2021). Novel methods to correct for observer and sampling bias in presence-only species distribution models. Global Ecology and Biogeography, 30, 2312–2325. https://doi.org/10.1111/geb.13383
+
+## 8. Literature
+
+ Hirzel, A. & Guisan, A. (2002) Which is the optimal sampling strategy for habitat suitability modelling. Ecological Modelling, 157, 331-341.
+
+Reynolds, A.P., Richards, G., De La Iglesia, B. & Rayward-Smith, V.J. (2006) Clustering rules: A comparison of partitioning and hierarchical clustering algorithms. Journal of Mathematical Modelling and Algorithms, 5, 475-504.
+
+Maechler, M., Rousseeuw, P., Struyf, A., Hubert, M. & Hornik, K. (2019) Cluster: cluster analysis basics and extensions. R package version, 1, 56.
+
+Schubert, E. & Rousseeuw, P.J. (2019) Faster k-Medoids Clustering: Improving the PAM, CLARA, and CLARANS Algorithms. Amato G., Gennaro C., Oria V., Radovanovic M. (eds) Similarity Search and Applications. SISAP 2019. Lecture Notes in Computer Science, vol 11807. Springer, Cham., pp. 171-187. 
